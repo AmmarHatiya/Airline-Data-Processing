@@ -3,12 +3,265 @@
  */
 package SSDI.Assignment2;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+
+        String file = "airline_safety.csv";
+
+        // List for stats of each column
+        List<String> airline_stats = new ArrayList<String>();
+        List<String> avail_seat_km_per_week_stats = new ArrayList<String>();
+        List<String> incidents_85_99_stats = new ArrayList<String>();
+        List<String> fatal_accidents_85_99_stats = new ArrayList<String>();
+        List<String> fatalities_85_99_stats = new ArrayList<String>();
+        List<String> incidents_00_14_stats = new ArrayList<String>();
+        List<String> fatal_accidents_00_14_stats = new ArrayList<String>();
+        List<String> fatalities_00_14_stats = new ArrayList<String>();
+        List<String> totalNumIncidents_stats = new ArrayList<String>();
+
+
+
+        // List that we fill with extracted values from each column
+        List<String> airline = new ArrayList<String>();
+        List<String> avail_seat_km_per_week = new ArrayList<String>();
+        List<String> incidents_85_99 = new ArrayList<String>();
+        List<String> fatal_accidents_85_99 = new ArrayList<String>();
+        List<String> fatalities_85_99 = new ArrayList<String>();
+        List<String> incidents_00_14 = new ArrayList<String>();
+        List<String> fatal_accidents_00_14 = new ArrayList<String>();
+        List<String> fatalities_00_14 = new ArrayList<String>();
+        List<String> totalNumIncidents = new ArrayList<String>();
+
+
+        String line;
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+
+                // add each section into it's own list
+                airline.add(line.split(",")[0]);
+                avail_seat_km_per_week.add(line.split(",")[1]);
+                incidents_85_99.add(line.split(",")[2]);
+                fatal_accidents_85_99.add(line.split(",")[3]);
+                fatalities_85_99.add(line.split(",")[4]);
+                incidents_00_14.add(line.split(",")[5]);
+                fatal_accidents_00_14.add(line.split(",")[6]);
+                fatalities_00_14.add(line.split(",")[7]);
+
+
+                System.out.println("Incidents from older era is:           " + line.split(",")[2]);
+                System.out.println("Incidents from newer era is:           " + line.split(",")[5]);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        // For loop that sums both incident numbers (in each time period) and creates an array full of them
+        for(int i =1; i<incidents_00_14.size(); i++){
+            int oldEra = Integer.valueOf(incidents_85_99.get(i));
+            int newEra = Integer.valueOf(incidents_00_14.get(i));
+            int total = oldEra+newEra;
+            totalNumIncidents.add(Integer.toString(total));
+
+        }
+
+        // Converts our csv file to an xml file and adds an extra 'column' or section that contains
+        // the total # of incidents from 85 to 14
+        String xml_filepath = "converted_airline_safety.xml";
+        try {
+
+            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+
+            DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+
+            Document document = documentBuilder.newDocument();
+
+            // root element
+            Element root = document.createElement("AirlineData");
+            document.appendChild(root);
+            for (int i = 1; i < avail_seat_km_per_week.size(); i++) {
+
+                System.out.print("\n Airline Name is: " + airline.get(i));
+
+                // airline element
+                Element airline_el = document.createElement("airline");
+
+                root.appendChild(airline_el);
+
+
+                Element name_el = document.createElement("Name");
+                name_el.appendChild(document.createTextNode(airline.get(i)));
+                airline_el.appendChild(name_el);
+
+                // avail_seat_km_per_week element
+                Element avail_seat_km_per_week_el = document.createElement("avail_seat_km_per_week");
+                avail_seat_km_per_week_el.appendChild(document.createTextNode(avail_seat_km_per_week.get(i)));
+                airline_el.appendChild(avail_seat_km_per_week_el);
+
+                // incidents_85_99 element
+                Element incidents_85_99_el = document.createElement("incidents_85_99");
+                incidents_85_99_el.appendChild(document.createTextNode(incidents_85_99.get(i)));
+                airline_el.appendChild(incidents_85_99_el);
+
+                // email element
+                Element fatal_accidents_85_99_el = document.createElement("fatal_accidents_85_99");
+                fatal_accidents_85_99_el.appendChild(document.createTextNode(fatal_accidents_85_99.get(i)));
+                airline_el.appendChild(fatal_accidents_85_99_el);
+
+                // department elements
+                Element fatalities_85_99_el = document.createElement("fatalities_85_99");
+                fatalities_85_99_el.appendChild(document.createTextNode(fatalities_85_99.get(i)));
+                airline_el.appendChild(fatalities_85_99_el);
+
+                // incidents_85_99 element
+                Element incidents_00_14_el = document.createElement("incidents_00_14");
+                incidents_00_14_el.appendChild(document.createTextNode(incidents_00_14.get(i)));
+                airline_el.appendChild(incidents_00_14_el);
+
+                // email element
+                Element fatal_accidents_00_14_el = document.createElement("fatal_accidents_00_14");
+                fatal_accidents_00_14_el.appendChild(document.createTextNode(fatal_accidents_00_14.get(i)));
+                airline_el.appendChild(fatal_accidents_00_14_el);
+
+                // department elements
+                Element fatalities_00_14_el = document.createElement("fatalities_00_14");
+                fatalities_00_14_el.appendChild(document.createTextNode(fatalities_00_14.get(i)));
+                airline_el.appendChild(fatalities_00_14_el);
+
+                Element totalNumIncidents_el = document.createElement("Total_Incidents");
+                totalNumIncidents_el.appendChild(document.createTextNode(totalNumIncidents.get(i-1)));
+                airline_el.appendChild(totalNumIncidents_el);
+
+            }
+
+            // create the xml file
+            // transform the DOM Object to an XML File
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource domSource = new DOMSource(document);
+            StreamResult streamResult = new StreamResult(new File(xml_filepath));
+
+            // If you use
+            // StreamResult result = new StreamResult(System.out);
+            // the output will be pushed to the standard output ...
+            // You can use that for debugging
+
+            transformer.transform(domSource, streamResult);
+
+            System.out.println("Done creating XML File");
+
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (TransformerException tfe) {
+            tfe.printStackTrace();
+        }
+
+        String stats_xml_file = "airline_summary_statistic.xml";
+        try {
+
+            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+
+            DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+
+            Document document = documentBuilder.newDocument();
+
+            // root element
+            Element root = document.createElement("AirlineData");
+            document.appendChild(root);
+            for (int i = 1; i < avail_seat_km_per_week.size(); i++) {
+
+                System.out.print("\n Airline Name is: " + airline.get(i));
+
+                // airline element
+                Element summary_el = document.createElement("Summary");
+
+                root.appendChild(summary_el);
+
+
+                Element name_el = document.createElement("Stat");
+                name_el.appendChild(document.createTextNode(airline.get(i)));
+                summary_el.appendChild(name_el);
+
+                // avail_seat_km_per_week element
+                Element avail_seat_km_per_week_el = document.createElement("avail_seat_km_per_week");
+                avail_seat_km_per_week_el.appendChild(document.createTextNode(avail_seat_km_per_week.get(i)));
+                summary_el.appendChild(avail_seat_km_per_week_el);
+
+                // incidents_85_99 element
+                Element incidents_85_99_el = document.createElement("incidents_85_99");
+                incidents_85_99_el.appendChild(document.createTextNode(incidents_85_99.get(i)));
+                summary_el.appendChild(incidents_85_99_el);
+
+                // email element
+                Element fatal_accidents_85_99_el = document.createElement("fatal_accidents_85_99");
+                fatal_accidents_85_99_el.appendChild(document.createTextNode(fatal_accidents_85_99.get(i)));
+                summary_el.appendChild(fatal_accidents_85_99_el);
+
+                // department elements
+                Element fatalities_85_99_el = document.createElement("fatalities_85_99");
+                fatalities_85_99_el.appendChild(document.createTextNode(fatalities_85_99.get(i)));
+                summary_el.appendChild(fatalities_85_99_el);
+
+                // incidents_85_99 element
+                Element incidents_00_14_el = document.createElement("incidents_00_14");
+                incidents_00_14_el.appendChild(document.createTextNode(incidents_00_14.get(i)));
+                summary_el.appendChild(incidents_00_14_el);
+
+                // email element
+                Element fatal_accidents_00_14_el = document.createElement("fatal_accidents_00_14");
+                fatal_accidents_00_14_el.appendChild(document.createTextNode(fatal_accidents_00_14.get(i)));
+                summary_el.appendChild(fatal_accidents_00_14_el);
+
+                // department elements
+                Element fatalities_00_14_el = document.createElement("fatalities_00_14");
+                fatalities_00_14_el.appendChild(document.createTextNode(fatalities_00_14.get(i)));
+                summary_el.appendChild(fatalities_00_14_el);
+
+                Element totalNumIncidents_el = document.createElement("Total_Incidents");
+                totalNumIncidents_el.appendChild(document.createTextNode(totalNumIncidents.get(i-1)));
+                summary_el.appendChild(totalNumIncidents_el);
+
+            }
+
+            // create the xml file
+            // transform the DOM Object to an XML File
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource domSource = new DOMSource(document);
+            StreamResult streamResult = new StreamResult(new File(stats_xml_file));
+
+            // If you use
+            // StreamResult result = new StreamResult(System.out);
+            // the output will be pushed to the standard output ...
+            // You can use that for debugging
+
+            transformer.transform(domSource, streamResult);
+
+            System.out.println("Done creating XML File");
+
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (TransformerException tfe) {
+            tfe.printStackTrace();
+        }
+
     }
 }
