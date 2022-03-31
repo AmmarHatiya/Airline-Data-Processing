@@ -26,19 +26,6 @@ public class App {
 
         String file = "airline_safety.csv";
 
-        // List for stats of each column
-        List<String> airline_stats = new ArrayList<String>();
-        List<String> avail_seat_km_per_week_stats = new ArrayList<String>();
-        List<String> incidents_85_99_stats = new ArrayList<String>();
-        List<String> fatal_accidents_85_99_stats = new ArrayList<String>();
-        List<String> fatalities_85_99_stats = new ArrayList<String>();
-        List<String> incidents_00_14_stats = new ArrayList<String>();
-        List<String> fatal_accidents_00_14_stats = new ArrayList<String>();
-        List<String> fatalities_00_14_stats = new ArrayList<String>();
-        List<String> totalNumIncidents_stats = new ArrayList<String>();
-
-
-
         // List that we fill with extracted values from each column
         List<String> airline = new ArrayList<String>();
         List<String> avail_seat_km_per_week = new ArrayList<String>();
@@ -50,11 +37,41 @@ public class App {
         List<String> fatalities_00_14 = new ArrayList<String>();
         List<String> totalNumIncidents = new ArrayList<String>();
 
+        // List for stats of each column
+        List<String> col_names = new ArrayList<String>();
+        List<Integer> min_values = new ArrayList<Integer>();
+        List<Integer> max_values = new ArrayList<Integer>();
+        List<Integer> mean_values = new ArrayList<Integer>();
+
+        int total_avail = 0;
+        int total_inc88 =0 ;
+        int total_fatal_acc85=0;
+        int total_fatal85=0;
+        int total_inc00=0;
+        int total_fatal_acc00=0;
+        int total_fatal00=0;
+
+        
+
+        List<String> incidents_85_99_stats = new ArrayList<String>();
+        List<String> fatal_accidents_85_99_stats = new ArrayList<String>();
+        List<String> fatalities_85_99_stats = new ArrayList<String>();
+        List<String> incidents_00_14_stats = new ArrayList<String>();
+        List<String> fatal_accidents_00_14_stats = new ArrayList<String>();
+        List<String> fatalities_00_14_stats = new ArrayList<String>();
 
         String line;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            int count = 0;
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
+                //System.out.println(line);
+
+                // Get a list of all the column names: needed for part 2
+                if (count == 0){
+                    for (int i = 0; i < 8; i++){
+                        col_names.add(line.split(",")[i]);
+                    }
+                }
 
                 // add each section into it's own list
                 airline.add(line.split(",")[0]);
@@ -67,23 +84,116 @@ public class App {
                 fatalities_00_14.add(line.split(",")[7]);
 
 
-                System.out.println("Incidents from older era is:           " + line.split(",")[2]);
-                System.out.println("Incidents from newer era is:           " + line.split(",")[5]);
+                //avail_seat_km_per_week_stats.add(toInt(line.split(",")[1]));
+                incidents_85_99_stats.add(line.split(",")[2]);
+                fatal_accidents_85_99_stats.add(line.split(",")[3]);
+                fatalities_85_99_stats.add(line.split(",")[4]);
+                incidents_00_14_stats.add(line.split(",")[5]);
+                fatal_accidents_00_14_stats.add(line.split(",")[6]);
+                fatalities_00_14_stats.add(line.split(",")[7]);
+
+                count ++;
             }
         } catch (Exception e) {
             System.out.println(e);
         }
 
-        // For loop that sums both incident numbers (in each time period) and creates an array full of them
-        for(int i =1; i<incidents_00_14.size(); i++){
-            int oldEra = Integer.valueOf(incidents_85_99.get(i));
-            int newEra = Integer.valueOf(incidents_00_14.get(i));
-            int total = oldEra+newEra;
+        // For loop that sums both incident numbers (in each time period) and creates an
+        // array full of them
+        // NOTE: This for loop also loops through every column and finds min
+
+        int min_avail = toInt(avail_seat_km_per_week.get(1));
+        int min_incidents85 = toInt(incidents_85_99.get(1));
+        int min_fatal_acc85 = toInt(fatal_accidents_85_99.get(1));
+        int min_fatal85 = toInt(fatalities_85_99.get(1));
+        int min_incidents00 = toInt(incidents_00_14.get(1));
+        int min_fatal_acc00 = toInt(fatal_accidents_00_14.get(1));
+        int min_fatal00 = toInt(fatalities_00_14.get(1));
+
+        int max_avail = toInt(avail_seat_km_per_week.get(1));
+        int max_incidents85 = toInt(incidents_85_99.get(1));
+        int max_fatal_acc85 = toInt(fatal_accidents_85_99.get(1));
+        int max_fatal85 = toInt(fatalities_85_99.get(1));
+        int max_incidents00 = toInt(incidents_00_14.get(1));
+        int max_fatal_acc00 = toInt(fatal_accidents_00_14.get(1));
+        int max_fatal00 = toInt(fatalities_00_14.get(1));
+
+
+        for (int i = 1; i < incidents_00_14.size(); i++) {
+            int oldEra = toInt(incidents_85_99.get(i));
+            int newEra = toInt(incidents_00_14.get(i));
+            int total = oldEra + newEra;
             totalNumIncidents.add(Integer.toString(total));
 
-        }
+            total_avail+=toInt(incidents_85_99.get(i));
 
-        // Converts our csv file to an xml file and adds an extra 'column' or section that contains
+            // Find min values of every column
+            if(min_avail > toInt(avail_seat_km_per_week.get(i))){
+                min_avail = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(min_incidents85 > toInt(avail_seat_km_per_week.get(i))){
+                min_incidents85 = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(min_fatal_acc85 > toInt(avail_seat_km_per_week.get(i))){
+                min_fatal85 = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(min_fatal85 > toInt(avail_seat_km_per_week.get(i))){
+                min_fatal85 = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(min_incidents00 > toInt(avail_seat_km_per_week.get(i))){
+                min_incidents00 = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(min_fatal_acc00 > toInt(avail_seat_km_per_week.get(i))){
+                min_fatal00 = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(min_fatal00 > toInt(avail_seat_km_per_week.get(i))){
+                min_fatal00 = toInt(avail_seat_km_per_week.get(i));
+            }
+
+            // Find max values of every column
+            if(max_avail < toInt(avail_seat_km_per_week.get(i))){
+                max_avail = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(max_incidents85 < toInt(avail_seat_km_per_week.get(i))){
+                max_incidents85 = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(max_fatal_acc85 < toInt(avail_seat_km_per_week.get(i))){
+                max_fatal85 = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(max_fatal85 < toInt(avail_seat_km_per_week.get(i))){
+                max_fatal85 = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(max_incidents00 < toInt(avail_seat_km_per_week.get(i))){
+                max_incidents00 = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(max_fatal_acc00 < toInt(avail_seat_km_per_week.get(i))){
+                max_fatal00 = toInt(avail_seat_km_per_week.get(i));
+            }
+            if(max_fatal00 < toInt(avail_seat_km_per_week.get(i))){
+                max_fatal00 = toInt(avail_seat_km_per_week.get(i));
+            }
+
+
+        }
+        min_values.add(min_avail);
+        min_values.add(min_incidents85);
+        min_values.add(min_fatal_acc85);
+        min_values.add(min_fatal85);
+        min_values.add(min_incidents00);
+        min_values.add(min_fatal_acc00);
+        min_values.add(min_fatal00);
+
+        max_values.add(max_avail);
+        max_values.add(max_incidents85);
+        max_values.add(max_fatal_acc85);
+        max_values.add(max_fatal85);
+        max_values.add(max_incidents00);
+        max_values.add(max_fatal_acc00);
+        max_values.add(max_fatal00);
+
+
+        // Converts our csv file to an xml file and adds an extra 'column' or section
+        // that contains
         // the total # of incidents from 85 to 14
         String xml_filepath = "converted_airline_safety.xml";
         try {
@@ -99,13 +209,12 @@ public class App {
             document.appendChild(root);
             for (int i = 1; i < avail_seat_km_per_week.size(); i++) {
 
-                System.out.print("\n Airline Name is: " + airline.get(i));
+                //System.out.print("\n Airline Name is: " + airline.get(i));
 
                 // airline element
                 Element airline_el = document.createElement("airline");
 
                 root.appendChild(airline_el);
-
 
                 Element name_el = document.createElement("Name");
                 name_el.appendChild(document.createTextNode(airline.get(i)));
@@ -147,7 +256,7 @@ public class App {
                 airline_el.appendChild(fatalities_00_14_el);
 
                 Element totalNumIncidents_el = document.createElement("Total_Incidents");
-                totalNumIncidents_el.appendChild(document.createTextNode(totalNumIncidents.get(i-1)));
+                totalNumIncidents_el.appendChild(document.createTextNode(totalNumIncidents.get(i - 1)));
                 airline_el.appendChild(totalNumIncidents_el);
 
             }
@@ -184,60 +293,33 @@ public class App {
             Document document = documentBuilder.newDocument();
 
             // root element
-            Element root = document.createElement("AirlineData");
+            Element root = document.createElement("Summary");
             document.appendChild(root);
-            for (int i = 1; i < avail_seat_km_per_week.size(); i++) {
+            for (int i = 0; i < 8; i++) {
 
-                System.out.print("\n Airline Name is: " + airline.get(i));
 
                 // airline element
-                Element summary_el = document.createElement("Summary");
+                Element summary_el = document.createElement("Stat");
 
                 root.appendChild(summary_el);
 
-
-                Element name_el = document.createElement("Stat");
-                name_el.appendChild(document.createTextNode(airline.get(i)));
+                Element name_el = document.createElement("Name");
+                name_el.appendChild(document.createTextNode(col_names.get(i)));
                 summary_el.appendChild(name_el);
 
                 // avail_seat_km_per_week element
-                Element avail_seat_km_per_week_el = document.createElement("avail_seat_km_per_week");
-                avail_seat_km_per_week_el.appendChild(document.createTextNode(avail_seat_km_per_week.get(i)));
-                summary_el.appendChild(avail_seat_km_per_week_el);
+                Element min_el = document.createElement("min");
+                min_el.appendChild(document.createTextNode(min_values.get(i).toString())); // MUST CHANGE
+                summary_el.appendChild(min_el);
 
-                // incidents_85_99 element
-                Element incidents_85_99_el = document.createElement("incidents_85_99");
-                incidents_85_99_el.appendChild(document.createTextNode(incidents_85_99.get(i)));
-                summary_el.appendChild(incidents_85_99_el);
+                Element max_el = document.createElement("max");
+                max_el.appendChild(document.createTextNode(max_values.get(i).toString()));
+                summary_el.appendChild(max_el);
+                
+                Element avg_el = document.createElement("avg");
+                avg_el.appendChild(document.createTextNode(avail_seat_km_per_week.get(i)));
+                summary_el.appendChild(avg_el);
 
-                // email element
-                Element fatal_accidents_85_99_el = document.createElement("fatal_accidents_85_99");
-                fatal_accidents_85_99_el.appendChild(document.createTextNode(fatal_accidents_85_99.get(i)));
-                summary_el.appendChild(fatal_accidents_85_99_el);
-
-                // department elements
-                Element fatalities_85_99_el = document.createElement("fatalities_85_99");
-                fatalities_85_99_el.appendChild(document.createTextNode(fatalities_85_99.get(i)));
-                summary_el.appendChild(fatalities_85_99_el);
-
-                // incidents_85_99 element
-                Element incidents_00_14_el = document.createElement("incidents_00_14");
-                incidents_00_14_el.appendChild(document.createTextNode(incidents_00_14.get(i)));
-                summary_el.appendChild(incidents_00_14_el);
-
-                // email element
-                Element fatal_accidents_00_14_el = document.createElement("fatal_accidents_00_14");
-                fatal_accidents_00_14_el.appendChild(document.createTextNode(fatal_accidents_00_14.get(i)));
-                summary_el.appendChild(fatal_accidents_00_14_el);
-
-                // department elements
-                Element fatalities_00_14_el = document.createElement("fatalities_00_14");
-                fatalities_00_14_el.appendChild(document.createTextNode(fatalities_00_14.get(i)));
-                summary_el.appendChild(fatalities_00_14_el);
-
-                Element totalNumIncidents_el = document.createElement("Total_Incidents");
-                totalNumIncidents_el.appendChild(document.createTextNode(totalNumIncidents.get(i-1)));
-                summary_el.appendChild(totalNumIncidents_el);
 
             }
 
@@ -262,6 +344,16 @@ public class App {
         } catch (TransformerException tfe) {
             tfe.printStackTrace();
         }
+
+    }
+    public static int toInt(String input){
+        int i = 0;
+        try{
+            i = Integer.parseInt(input);
+        } catch(NumberFormatException e){ // handle your exception
+            e.printStackTrace();
+        }
+        return i;
 
     }
 }
