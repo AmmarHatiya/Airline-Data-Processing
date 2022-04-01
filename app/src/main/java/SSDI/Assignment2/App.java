@@ -6,6 +6,9 @@ package SSDI.Assignment2;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.PrintWriter;
+
+import java.nio.file.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,7 +27,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        String file = "airline_safety.csv";
+        String file = "./src/main/resources/airline_safety.csv";
 
         // List that we fill with extracted values from each column
         List<String> airline = new ArrayList<String>();
@@ -102,7 +105,7 @@ public class App {
         // array full of them
         // NOTE: This for loop also loops through every column and finds min
 
-        int min_avail = toInt(avail_seat_km_per_week.get(1));
+        /* int min_avail = toInt(avail_seat_km_per_week.get(1));
         int min_incidents85 = toInt(incidents_85_99.get(1));
         int min_fatal_acc85 = toInt(fatal_accidents_85_99.get(1));
         int min_fatal85 = toInt(fatalities_85_99.get(1));
@@ -117,7 +120,7 @@ public class App {
         int max_incidents00 = toInt(incidents_00_14.get(1));
         int max_fatal_acc00 = toInt(fatal_accidents_00_14.get(1));
         int max_fatal00 = toInt(fatalities_00_14.get(1));
-
+ */
 
         for (int i = 1; i < incidents_00_14.size(); i++) {
             int oldEra = toInt(incidents_85_99.get(i));
@@ -128,7 +131,7 @@ public class App {
             total_avail+=toInt(incidents_85_99.get(i));
 
             // Find min values of every column
-            if(min_avail > toInt(avail_seat_km_per_week.get(i))){
+            /* if(min_avail > toInt(avail_seat_km_per_week.get(i))){
                 min_avail = toInt(avail_seat_km_per_week.get(i));
             }
             if(min_incidents85 > toInt(avail_seat_km_per_week.get(i))){
@@ -189,13 +192,44 @@ public class App {
         max_values.add(max_fatal85);
         max_values.add(max_incidents00);
         max_values.add(max_fatal_acc00);
-        max_values.add(max_fatal00);
+        max_values.add(max_fatal00); */
+    }
+    
+    String reline;
+    int track = 0;
+    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        
+        PrintWriter out = new PrintWriter(file);
+        while ((reline = br.readLine()) != null) {
+            //System.out.println(line);
+            String currLine= "";
+            // Get a list of all the column names: needed for part 2
+            if (track !=0){
+                currLine = reline+ "," + totalNumIncidents.get(track-1);
+            }
+            System.out.println("CurrentLine is: " + currLine);
+            out.println(currLine);
+            track++;
+        }
+        out.close();
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+    File sample = new File("./src/main/resources/sample.csv");
+    Path from = sample.toPath(); //convert from File to Path
+    Path to = Paths.get(file); //convert from String to Path
+    try {
+        Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
 
 
         // Converts our csv file to an xml file and adds an extra 'column' or section
         // that contains
         // the total # of incidents from 85 to 14
-        String xml_filepath = "converted_airline_safety.xml";
+        String xml_filepath = "./src/main/resources/converted_airline_safety.xml";
         try {
 
             DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
@@ -216,6 +250,7 @@ public class App {
 
                 root.appendChild(airline_el);
 
+                // Name Element
                 Element name_el = document.createElement("Name");
                 name_el.appendChild(document.createTextNode(airline.get(i)));
                 airline_el.appendChild(name_el);
@@ -283,7 +318,7 @@ public class App {
             tfe.printStackTrace();
         }
 
-        String stats_xml_file = "airline_summary_statistic.xml";
+        String stats_xml_file = "./src/main/resources/airline_summary_statistic.xml";
         try {
 
             DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
@@ -298,24 +333,27 @@ public class App {
             for (int i = 0; i < 8; i++) {
 
 
-                // airline element
+                // Statistic element
                 Element summary_el = document.createElement("Stat");
 
                 root.appendChild(summary_el);
 
+                // Name of column
                 Element name_el = document.createElement("Name");
                 name_el.appendChild(document.createTextNode(col_names.get(i)));
                 summary_el.appendChild(name_el);
 
-                // avail_seat_km_per_week element
+                // min element
                 Element min_el = document.createElement("min");
-                min_el.appendChild(document.createTextNode(min_values.get(i).toString())); // MUST CHANGE
+                min_el.appendChild(document.createTextNode(avail_seat_km_per_week.get(i).toString())); // MUST CHANGE
                 summary_el.appendChild(min_el);
 
+                //max element
                 Element max_el = document.createElement("max");
-                max_el.appendChild(document.createTextNode(max_values.get(i).toString()));
+                max_el.appendChild(document.createTextNode(avail_seat_km_per_week.get(i).toString()));
                 summary_el.appendChild(max_el);
                 
+                //avg element
                 Element avg_el = document.createElement("avg");
                 avg_el.appendChild(document.createTextNode(avail_seat_km_per_week.get(i)));
                 summary_el.appendChild(avg_el);
