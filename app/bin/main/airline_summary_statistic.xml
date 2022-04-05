@@ -2,56 +2,56 @@
 <Summary>
     <Stat>
         <Name>avail_seat_km_per_week</Name>
-        <min>259373346</min>
-        <max>7139291291</max>
-        <avg>1384621305</avg>
+        <min>2.59373346E8</min>
+        <max>7.139291291E9</max>
+        <avg>1.384621304732143E9</avg>
     </Stat>
     <Stat>
         <Name>incidents_85_99</Name>
-        <min>0</min>
-        <max>76</max>
-        <avg>7.178571429</avg>
+        <min>0.0</min>
+        <max>76.0</max>
+        <avg>7.178571428571429</avg>
     </Stat>
     <Stat>
         <Name>fatal_accidents_85_99</Name>
-        <min>0</min>
-        <max>14</max>
-        <avg>2.178571429</avg>
+        <min>0.0</min>
+        <max>14.0</max>
+        <avg>2.1785714285714284</avg>
     </Stat>
     <Stat>
         <Name>fatalities_85_99</Name>
-        <min>0</min>
-        <max>535</max>
-        <avg>112.4107143</avg>
+        <min>0.0</min>
+        <max>535.0</max>
+        <avg>112.41071428571429</avg>
     </Stat>
     <Stat>
         <Name>incidents_00_14</Name>
-        <min>0</min>
-        <max>24</max>
+        <min>0.0</min>
+        <max>24.0</max>
         <avg>4.125</avg>
     </Stat>
     <Stat>
         <Name>fatal_accidents_00_14</Name>
-        <min>0</min>
-        <max>3</max>
-        <avg>0.660714286</avg>
+        <min>0.0</min>
+        <max>3.0</max>
+        <avg>0.6607142857142857</avg>
     </Stat>
     <Stat>
         <Name>fatalities_00_14</Name>
-        <min>0</min>
-        <max>537</max>
-        <avg>55.51785714</avg>
+        <min>0.0</min>
+        <max>537.0</max>
+        <avg>55.517857142857146</avg>
     </Stat>
     <Stat>
         <Name>avg_85_99</Name>
-        <min />
-        <max />
+        <min/>
+        <max/>
         <avg>7.052631578947368</avg>
     </Stat>
     <Stat>
         <Name>avg_00_14</Name>
-        <min />
-        <max />
+        <min/>
+        <max/>
         <avg>4.052631578947368</avg>
     </Stat>
 </Summary>
